@@ -1,7 +1,7 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "project": {
-    "name": "was-tutorial"
+    "name": "wickeyappstore-phaserce"
   },
   "apps": [
     {
@@ -27,7 +27,10 @@
         "../node_modules/wickeyappstore/styles.css"
       ],
       "scripts": [
-        "../node_modules/hammerjs/hammer.min.js"
+        "../node_modules/hammerjs/hammer.min.js",
+        "../node_modules/phaser-ce/build/custom/pixi.js",
+        "../node_modules/phaser-ce/build/custom/p2.js",
+        "../node_modules/phaser-ce/build/custom/phaser-split.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {
@@ -64,5 +67,6 @@
     "styleExt": "css",
     "component": {
     }
-  }
+  },
+  "packageManager": "yarn"
 }

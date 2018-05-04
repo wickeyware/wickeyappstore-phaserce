@@ -37,11 +37,17 @@ It shows an implementation of Service Workers, and Push notifications using [One
 ## QuickStart
 
 1. `npm install -g @angular/cli@latest` you can SKIP if you already have this installed
-2. Clone project `git clone https://github.com/wickeyware/was-tutorial.git`
-3. `cd was-tutorial`
+2. Clone project `git clone https://github.com/wickeyware/wickeyappstore-phaserce.git`
+3. `cd wickeyappstore-phaserce`
 4. `npm install` or if you have yarn `yarn`
 6. `npm start` or `yarn start` @ `http://localhost:4204/` Development server (reloads on file change)
 7. ONE LINER BUILD/SERVE: `npm run build` @ `http://localhost:8080/`
+8. OPTIONAL: To push to your git repository:
+```bash
+rm -rf .git && git init && git add . && git commit -a -m 'First Commit'
+git remote add origin https://github.com/<username>/<repository>.git
+git push -u origin master
+```
 
 ## Help Installing via npm or yarn
 

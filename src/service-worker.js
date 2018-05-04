@@ -1,2 +1,2 @@
-console.log('in was-tutorial service worker');
+console.log('in wickeyappstore-phaserce service worker');
 importScripts('OneSignalSDKWorker.js');

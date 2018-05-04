@@ -80,7 +80,7 @@ export class OneSignalController {
     // OneSignal API: https://documentation.onesignal.com/docs/web-push-sdk
     // https://documentation.onesignal.com/v3.0/docs/customize-permission-messages
     private doOneSignal() {
-        // INIT PUSH serviceWorkerUpdaterPath: 'was-tutorial',
+        // INIT PUSH serviceWorkerUpdaterPath: 'wickeyappstore-phaserce',
         if (this.oneSignalInited === false) {
             this.oneSignal.push(['init', {
                 appId: this.appId,

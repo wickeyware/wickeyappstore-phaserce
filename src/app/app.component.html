@@ -30,7 +30,7 @@
           <p>{{whats_new}}</p>
           <mat-divider></mat-divider>
           <mat-chip-list>
-            <mat-chip style="margin-top:25px;" color="accent" selected="true">You have honked: {{horn_presses}} times!</mat-chip>
+            <mat-chip style="margin-top:25px;" color="accent" selected="true">Game One highscore: {{game1_highscore}}</mat-chip>
           </mat-chip-list>
         </mat-card-content>
       </mat-card>
@@ -38,34 +38,35 @@
     <!-- Main Horn -->
     <mat-tab>
       <ng-template mat-tab-label>
-        <mat-icon>volume_up</mat-icon>
+        <mat-icon>games</mat-icon>
       </ng-template>
       <mat-card class="my-panel-container">
         <mat-card-content>
-          <button color="accent" class="horn-button fab-button-resizer" mat-fab (click)="playHorn(1)">
-            <mat-icon class="fab-button-resizer" aria-label="airhorn">volume_up</mat-icon>
+          <button color="accent" class="horn-button fab-button-resizer" mat-fab (click)="playGame(1)">
+            <mat-icon class="fab-button-resizer" aria-label="airhorn">games</mat-icon>
           </button>
-          <h3 style="text-align:center;width:100%;">Classic Air Horn</h3>
+          <h3 style="text-align:center;width:100%;">Classic Game</h3>
+          <div id="phaser-example"></div>
         </mat-card-content>
       </mat-card>
     </mat-tab>
     <!-- Locked Horn -->
     <mat-tab>
       <ng-template mat-tab-label>
-        <mat-icon *ngIf="(userService.checkIfPurchased(trombonePurchaseId) | async); else lockedIcon">sentiment_very_dissatisfied</mat-icon>
+        <mat-icon *ngIf="(userService.checkIfPurchased(levelPurchaseId) | async); else lockedIcon">videogame_asset</mat-icon>
         <ng-template #lockedIcon>
           <mat-icon>lock</mat-icon>
         </ng-template>
       </ng-template>
       <mat-card class="my-panel-container">
         <mat-card-content>
-          <button color="warn" class="horn-button fab-button-resizer" mat-fab (click)="playHorn(2)">
-            <mat-icon class="fab-button-resizer" aria-label="trombone" *ngIf="(userService.checkIfPurchased(trombonePurchaseId) | async); else lockedBlock">sentiment_very_dissatisfied</mat-icon>
+          <button color="warn" class="horn-button fab-button-resizer" mat-fab (click)="playGame(2)">
+            <mat-icon class="fab-button-resizer" aria-label="trombone" *ngIf="(userService.checkIfPurchased(levelPurchaseId) | async); else lockedBlock">videogame_asset</mat-icon>
             <ng-template #lockedBlock>
               <mat-icon class="fab-button-resizer" aria-label="locked">lock_outline</mat-icon>
             </ng-template>
           </button>
-          <h3 style="text-align:center;width:100%;">Sad Trombone</h3>
+          <h3 style="text-align:center;width:100%;">Level 2</h3>
         </mat-card-content>
       </mat-card>
     </mat-tab>

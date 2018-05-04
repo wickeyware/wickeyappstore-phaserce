@@ -1,6 +1,6 @@
 import { WasTutorialPage } from './app.po';
 
-describe('was-tutorial App', () => {
+describe('wickeyappstore-phaserce App', () => {
   let page: WasTutorialPage;
 
   beforeEach(() => {

@@ -2,7 +2,14 @@ import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { OneSignalController } from '../OneSignalController';
 import { UserService, User, UserParams, WasUp, WasAlert, WasPay, PromptUpdateService } from 'wickeyappstore';
-import { Howl } from 'howler';
+
+// Phaser v3
+// import * as Phaser from 'phaser';
+// Phaser-ce
+import 'phaser-ce/build/custom/pixi';
+import 'phaser-ce/build/custom/p2';
+import { Game, AUTO, IGameConfig } from 'phaser-ce';
+// import * as Phaser from 'phaser-ce/build/custom/phaser-split';
 
 @Component({
   selector: 'app-root',
@@ -11,8 +18,8 @@ import { Howl } from 'howler';
 })
 export class AppComponent {
   // (1) SET THESE VALUES FOR YOUR APP ****************************
-  public title = 'Air Horn';
-  public version = '1.8.0';
+  public title = 'Classic Game';
+  public version = '0.0.1';
   public whats_new = 'Updated libraries & organized push notifications. Add configurations.';
   // (2) UPDATE the version to match in package.json ****************************
   //     UPDATE the version & whats_new in ngsw-config.json
@@ -20,10 +27,10 @@ export class AppComponent {
   //
   // (3) SET THESE VALUES FOR YOUR APP ****************************
   // IF YOU DO NOT HAVE PUSH NOTIFICATIONS just set ONESIGNAL_ENABLED = FALSE
-  private ONESIGNAL_ENABLED = true;
-  private oneSignalAppId = '5198c0dc-616c-46df-9357-15830b47ffbc';
-  private oneSignalSafariWebId = 'web.onesignal.auto.48d27e8c-5bf0-4f8f-a083-e09c208eb2cb';
-  private oneSignalConfig = { title: this.title, exampleNotificationMessage: 'New horn sounds are here, get em now!' };
+  private ONESIGNAL_ENABLED = false;
+  private oneSignalAppId = '';
+  private oneSignalSafariWebId = '';
+  private oneSignalConfig = { title: this.title, exampleNotificationMessage: 'New game levels are here, get em now!' };
   //
 
 
@@ -31,14 +38,15 @@ export class AppComponent {
   // Variables //
   // push controller
   private oneSignalController = new OneSignalController;
-  // declare the air horn sounds
-  private classicsound = new Howl({ src: ['assets/sounds/airhorn.mp3'] });
-  private trombonesound = new Howl({ src: ['assets/sounds/sad-trombone.mp3'] });
 
-  // stat to save
-  public horn_presses = 0;
-  public trombonePurchaseId = 10;  // This is from the developer.wickeyappstore.com panel after inapps are added.
+  public levelPurchaseId = 10;  // This is from the developer.wickeyappstore.com panel after inapps are added.
 
+  // GAME VARIABLES //
+  public game: Game;
+  public logo: any;
+  public text: any;
+  private gameConfig: IGameConfig;
+  public game1_highscore = 0;
 
   constructor(
     public userService: UserService,
@@ -51,48 +59,64 @@ export class AppComponent {
       if (_isLogged) {
         console.warn('LOGGED IN');
         // load save data from server
-        this.getFromCloud();
+        // this.getFromCloud();
       } else {
         console.warn('LOGGED OUT');
         // reset progress
-        this.horn_presses = 0;
       }
+      // Wait to initialize game till user has been loaded
+      this.initGame1();
       // This initiate the Push Service. Do on login status changes
       this.oneSignalController.loadPushSystem(this.userService, this.oneSignalAppId, this.oneSignalSafariWebId,
         this.oneSignalConfig, this.ONESIGNAL_ENABLED);
     });
   }
 
-  // Play the air horn sound
-  playHorn(horn: number) {
-    console.log('playHorn', horn);
-    let DIDSOUNDPLAY = false;
-    if (horn === 1) {
-      DIDSOUNDPLAY = true;
-      this.classicsound.play();
+  ///////////////////////////////////
+  // GAME ONE
+  ///////////////////////////////////
+  initGame1() {
+    this.game = new Game(window.innerWidth - 40, window.innerHeight - 90, AUTO, 'phaser-example', {
+      preload: this.preload,
+      create: this.create
+    });
+  }
+  preload() {
+    this.game.load.image('logo', 'assets/wwlogo.png');
+  }
+  create() {
+    this.logo = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'logo');
+    this.logo.anchor.setTo(0.5, 0.5);
+    const _xScale = (window.innerWidth - 20) / this.logo.width;
+    this.logo.width *= _xScale;
+    this.logo.height *= _xScale;
+    this.text = this.game.add.text(250, 16, 'Work At Play', { fill: '#ffffff' });
+    // this.text.x = this.logo.x - (this.text.width / 5);
+    this.text.anchor.setTo(0.5, 0.5);
+    this.text.y = this.logo.y + (this.logo.height / 2) + (this.text.height / 2);
+  }
+  ///////////////////////////////////
+  // GAME ONE
+  ///////////////////////////////////
+
+  // Check if game available
+  playGame(gameId: number) {
+    console.log('playGame', gameId);
+    if (gameId === 1) {
+      console.log('allow game 1');
+      // TODO: Maybe a fullscreen overlay
     } else {
-      // TODO: Need to change to different icon if unlocked <i class="material-icons">sentiment_very_dissatisfied</i>
-      const _tromboneInapp = this.userService.getInapp(this.trombonePurchaseId);
+      const _level2Inapp = this.userService.getInapp(this.levelPurchaseId);
       // check if locked
-      if (_tromboneInapp && _tromboneInapp.isOwned === true) {
-        DIDSOUNDPLAY = true;
-        this.trombonesound.play();
+      if (_level2Inapp && _level2Inapp.isOwned === true) {
+        console.log('allow game 2');
       } else {
-        console.log('this horn is locked');
-        this.dialog.open(WasPay, { data: _tromboneInapp }).afterClosed().subscribe(_isSuccess => {
+        console.log('this game is locked');
+        this.dialog.open(WasPay, { data: _level2Inapp }).afterClosed().subscribe(_isSuccess => {
           if (_isSuccess === true) {
-            DIDSOUNDPLAY = true;
-            this.playHorn(horn);
+            this.playGame(gameId);
           }
         });
-      }
-    }
-    // check if sound played
-    if (DIDSOUNDPLAY) {
-      this.horn_presses = this.horn_presses + 1;
-      this.saveToCloud();
-      if (this.horn_presses === 5) {
-        this.oneSignalController.askForPush();
       }
     }
   }
@@ -114,15 +138,16 @@ export class AppComponent {
   // AIR HORN SAVE/GET
   // We are using 'horn_key' as our identifier. Any key is valid - if you set it, you can update it and read from it.
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // TODO: Use new CloudSync in WAS
   saveToCloud() {
-    this.userService.setStore({ 'horn_key': this.horn_presses });
+    // this.userService.setStore({ 'horn_key': this.horn_presses });
   }
   getFromCloud() {
     const _mykey = 'horn_key';
     this.userService.getStore([_mykey]).subscribe((res) => {
       // console.log('WAS: getMetaData RETURN:', res);
       if (res[_mykey]) {
-        this.horn_presses = Number(res[_mykey]);
+        // this.horn_presses = Number(res[_mykey]);
       }
     }, (error) => {
       // may want to deal with the error - or ignore and try it again
