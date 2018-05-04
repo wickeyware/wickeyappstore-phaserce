@@ -1,0 +1,28 @@
+{
+  "index": "/index.html",
+  "appData": {"title": "Update Available", "description": "Updated libraries & organized push notifications. Add configurations.", "version": "1.8.0", "askToUpdate": true},
+  "assetGroups": [{
+    "name": "app",
+    "installMode": "prefetch",
+    "resources": {
+      "files": [
+        "/assets/favicon.ico",
+        "/index.html"
+      ],
+      "versionedFiles": [
+        "/*.bundle.css",
+        "/*.bundle.js",
+        "/*.chunk.js"
+      ]
+    }
+  }, {
+    "name": "assets",
+    "installMode": "lazy",
+    "updateMode": "prefetch",
+    "resources": {
+      "files": [
+        "/assets/**"
+      ]
+    }
+  }]
+}

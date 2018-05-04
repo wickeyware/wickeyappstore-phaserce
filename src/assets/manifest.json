@@ -1,0 +1,63 @@
+{
+  "name": "Air Horn -  a party noise maker",
+  "short_name": "Air Horn",
+  "icons": [
+    {
+      "src": "/assets/icon36.png",
+      "type": "image/png",
+      "sizes": "36x36"
+    },
+    {
+      "src": "/assets/icon48.png",
+      "type": "image/png",
+      "sizes": "48x48"
+    },
+    {
+      "src": "/assets/icon60.png",
+      "type": "image/png",
+      "sizes": "60x60"
+    },
+    {
+      "src": "/assets/icon72.png",
+      "type": "image/png",
+      "sizes": "72x72"
+    },
+    {
+      "src": "/assets/icon76.png",
+      "type": "image/png",
+      "sizes": "76x76"
+    },
+    {
+      "src": "/assets/icon96.png",
+      "type": "image/png",
+      "sizes": "96x96"
+    },
+    {
+      "src": "/assets/icon120.png",
+      "type": "image/png",
+      "sizes": "120x120"
+    },
+    {
+      "src": "/assets/icon180.png",
+      "type": "image/png",
+      "sizes": "180x180"
+    },
+    {
+      "src": "/assets/icon192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/assets/icon512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff",
+  "start_url": "/index.html?utm_source=homescreen",
+  "display": "standalone",
+  "gcm_sender_id_comment": "For OneSignal Web Push Notifications, Do Not Change ID",
+  "gcm_sender_id": "482941778795",
+  "orientation": "portrait"
+}
