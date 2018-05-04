@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 This shows all commits since last release.
 
+## [0.0.2](https://github.com/wickeyware/wickeyappstore-phaserce/releases/tag/0.0.1) - 2018-05-04
+
+### Changed
+
+* **App** Updated game to demo with floating phaser logo
+
+
 ## [0.0.1](https://github.com/wickeyware/wickeyappstore-phaserce/releases/tag/0.0.1) - 2018-05-04
 
 ### Added

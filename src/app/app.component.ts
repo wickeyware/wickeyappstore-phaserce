@@ -20,7 +20,7 @@ export class AppComponent {
   // (1) SET THESE VALUES FOR YOUR APP ****************************
   public title = 'Classic Game';
   public version = '0.0.1';
-  public whats_new = 'Updated libraries & organized push notifications. Add configurations.';
+  public whats_new = 'New game';
   // (2) UPDATE the version to match in package.json ****************************
   //     UPDATE the version & whats_new in ngsw-config.json
   //
@@ -34,7 +34,6 @@ export class AppComponent {
   //
 
 
-
   // Variables //
   // push controller
   private oneSignalController = new OneSignalController;
@@ -44,9 +43,7 @@ export class AppComponent {
   // GAME VARIABLES //
   public game: Game;
   public logo: any;
-  public text: any;
-  private gameConfig: IGameConfig;
-  public game1_highscore = 0;
+  public emitter: any;
 
   constructor(
     public userService: UserService,
@@ -65,7 +62,7 @@ export class AppComponent {
         // reset progress
       }
       // Wait to initialize game till user has been loaded
-      this.initGame1();
+      this.initializePhaser();
       // This initiate the Push Service. Do on login status changes
       this.oneSignalController.loadPushSystem(this.userService, this.oneSignalAppId, this.oneSignalSafariWebId,
         this.oneSignalConfig, this.ONESIGNAL_ENABLED);
@@ -73,66 +70,59 @@ export class AppComponent {
   }
 
   ///////////////////////////////////
-  // GAME ONE
+  // PHASER GAME CODE
   ///////////////////////////////////
-  initGame1() {
-    this.game = new Game(window.innerWidth - 40, window.innerHeight - 90, AUTO, 'phaser-example', {
+  initializePhaser() {
+    this.game = new Game(window.innerWidth, window.innerHeight, AUTO, 'phaser-example', {
       preload: this.preload,
-      create: this.create
+      create: this.create,
+      update: this.update
     });
   }
   preload() {
-    this.game.load.image('logo', 'assets/wwlogo.png');
+    this.game.load.image('sky', 'assets/space3.png');
+    this.game.load.image('logo', 'assets/phaser2-logo.png');
+    this.game.load.image('red', 'assets/red.png');
   }
   create() {
-    this.logo = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'logo');
+    this.game.physics.startSystem(Phaser.Physics.ARCADE);
+
+    const sky = this.game.add.image(this.game.world.centerX, this.game.world.centerY, 'sky');
+    // anchor to center
+    sky.anchor.setTo(0.5, 0.5);
+    // set background to fill the screen
+    sky.scale.set(window.innerWidth / sky.width, window.innerHeight / sky.height);
+
+    // Add the logo
+    this.logo = this.game.add.sprite(this.game.world.centerX - 100, this.game.world.centerY, 'logo');
+    this.game.physics.enable(this.logo, Phaser.Physics.ARCADE);
     this.logo.anchor.setTo(0.5, 0.5);
-    const _xScale = (window.innerWidth - 20) / this.logo.width;
-    this.logo.width *= _xScale;
-    this.logo.height *= _xScale;
-    this.text = this.game.add.text(250, 16, 'Work At Play', { fill: '#ffffff' });
-    // this.text.x = this.logo.x - (this.text.width / 5);
-    this.text.anchor.setTo(0.5, 0.5);
-    this.text.y = this.logo.y + (this.logo.height / 2) + (this.text.height / 2);
-  }
-  ///////////////////////////////////
-  // GAME ONE
-  ///////////////////////////////////
 
-  // Check if game available
-  playGame(gameId: number) {
-    console.log('playGame', gameId);
-    if (gameId === 1) {
-      console.log('allow game 1');
-      // TODO: Maybe a fullscreen overlay
-    } else {
-      const _level2Inapp = this.userService.getInapp(this.levelPurchaseId);
-      // check if locked
-      if (_level2Inapp && _level2Inapp.isOwned === true) {
-        console.log('allow game 2');
-      } else {
-        console.log('this game is locked');
-        this.dialog.open(WasPay, { data: _level2Inapp }).afterClosed().subscribe(_isSuccess => {
-          if (_isSuccess === true) {
-            this.playGame(gameId);
-          }
-        });
-      }
-    }
+    //  Create our tween. This will fade the sprite to alpha 1 over the duration of 2 seconds
+    const tween = this.game.add.tween(this.logo).to({ x: this.game.world.centerX + 100 }, 2000, "Linear", true, 0, -1);
+
+    //  And this tells it to yoyo, i.e. fade back to zero again before repeating.
+    //  The 2000 tells it to wait for 1 seconds before starting the fade back.
+    tween.yoyo(true, 2000);
+
+    this.emitter = this.game.add.emitter(0, 0, 100);
+    this.emitter.makeParticles('red');
+    this.emitter.minParticleSpeed.setTo(-600, 60);
+    this.emitter.maxParticleSpeed.setTo(600, 200);
+    this.emitter.minParticleScale = 0.5;
+    this.emitter.maxParticleScale = 1;
+    //  This will emit a quantity of 5 particles every 50ms. Each particle will live for 2000ms.
+    //  The -1 means "run forever"
+    this.emitter.flow(2000, 1, 1, -1);
+    this.game.physics.enable(this.emitter, Phaser.Physics.ARCADE);
+
+  }
+  update() {
+    this.emitter.x = this.logo.x - 40;
+    this.emitter.y = this.logo.y - this.logo.height * .5 + 20;
   }
 
-  //  Return the login message
-  get displayMessage() {
-    return this.userService.user.map((usr: User) => {
-      let _displayMsg = '';
-      if (usr.email) {
-        _displayMsg = 'Welcome Back!';
-      } else {
-        _displayMsg = 'Sign in with the WickeyAppStore button';
-      }
-      return _displayMsg;
-    });
-  }
+
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // AIR HORN SAVE/GET
